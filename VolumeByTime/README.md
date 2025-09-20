@@ -4,6 +4,10 @@
 
 The Volume by Time strategy is converted from LuxAlgo's "Volume by Time" Pine Script indicator. This strategy analyzes volume patterns by time of day and generates trading signals based on volume anomalies compared to historical averages at the same time periods.
 
+**Original Source**: [Volume by Time [LuxAlgo]](https://www.tradingview.com/v/uLzJcB7H/)
+**Indicator Author**: LuxAlgo
+**Conversion**: Pine Script to Python backtesting.py implementation
+
 ## Strategy Logic
 
 ### Core Concept

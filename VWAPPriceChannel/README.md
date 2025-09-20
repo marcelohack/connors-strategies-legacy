@@ -2,6 +2,10 @@
 
 A Python backtesting.py implementation of the Pine Script "VWAP Price Channel" indicator, converted into a systematic trading strategy for the connors framework.
 
+**Original Source**: [VWAP Price Channel](https://www.tradingview.com/v/Psnjpa2Y/)
+**Indicator Author**: SamRecio
+**Conversion**: Pine Script to Python backtesting.py implementation
+
 ## Overview
 
 The VWAP Price Channel Strategy creates dynamic price channels using Volume Weighted Average Price (VWAP) calculations anchored to highest and lowest price levels over a specified lookback period. The strategy generates trading signals based on price breakouts from these adaptive channels.
