@@ -2,6 +2,10 @@
 
 A comprehensive implementation of Smart Money Concepts (SMC) trading methodology converted from Pine Script to Python for use with the backtesting.py framework.
 
+**Original Source**: [Smart Money Concepts (SMC) [LuxAlgo]](https://www.tradingview.com/v/CnB3fSph/)
+**Indicator Author**: LuxAlgo
+**Conversion**: Pine Script to Python backtesting.py implementation
+
 ## Overview
 
 This strategy implements the core principles of Smart Money Concepts, which focuses on identifying institutional trading patterns and following "smart money" movements through price structure analysis. The strategy identifies key institutional concepts such as:
