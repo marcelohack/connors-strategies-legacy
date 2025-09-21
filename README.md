@@ -134,6 +134,9 @@ Each strategy follows a consistent directory structure pattern:
 connors-trading-strategies/
 ├── README.md                           # This file
 ├── CLAUDE.md                          # Claude Code guidance
+├── .claude/                           # Claude Code configuration
+│   ├── agents -> ../../agents         # Symbolic link to externalized agents
+│   └── settings.local.json            # Local Claude settings
 ├── <TradingStrategyName>/              # Strategy directory
 │   ├── <strategy_file>.py             # Strategy implementation
 │   └── README.md                      # Detailed strategy documentation
@@ -303,6 +306,21 @@ The strategies in this repository are designed to work seamlessly with the [Conn
 - **Risk Management**: Always include stop loss and position sizing
 - **Testing**: Validate on multiple instruments and time periods
 - **Performance**: Optimize for speed in `next()` method
+
+### Claude Code Configuration
+
+This repository uses Claude Code for AI-assisted development. The Claude agents are externalized to the [connors-agents repository](https://github.com/marcelohack/connors-agents) and linked via symbolic link for centralized management across multiple projects.
+
+**Configuration Structure**:
+- `.claude/agents` → Symbolic link to `../../agents` (external repository)
+- `.claude/settings.local.json` → Local Claude settings
+- `CLAUDE.md` → Project-specific Claude instructions
+
+The externalized agents provide specialized capabilities for:
+- Backtesting and strategy analysis
+- Trading system development
+- Performance optimization
+- Risk management implementation
 
 ## Resources
 
