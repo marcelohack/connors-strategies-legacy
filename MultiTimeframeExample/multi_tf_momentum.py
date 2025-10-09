@@ -174,10 +174,13 @@ class MultiTimeframeMomentumStrategy(MultiTimeframeStrategy):
         # Exit condition: price below exit SMA
         exit_signal = current_price < hourly_exit_sma_current
 
+        # Format weekly SMA for logging
+        weekly_sma_str = f"{weekly_sma_current:.2f}" if weekly_sma_current is not None else "N/A"
+
         # Log current market conditions (DEBUG level)
         self.logger.debug(
             f"Market data - Date: {current_date}, Price: {current_price:.2f}, "
-            f"Weekly_SMA: {weekly_sma_current:.2f if weekly_sma_current else 'N/A'}, "
+            f"Weekly_SMA: {weekly_sma_str}, "
             f"Daily_RSI: {daily_rsi_current:.1f}, "
             f"Entry_SMA: {hourly_entry_sma_current:.2f}, Exit_SMA: {hourly_exit_sma_current:.2f}"
         )
@@ -189,7 +192,7 @@ class MultiTimeframeMomentumStrategy(MultiTimeframeStrategy):
             if weekly_uptrend and daily_momentum_positive and entry_signal:
                 # All conditions met - enter long position
                 self.logger.info(
-                    f"🟢 BUY signal - Weekly uptrend (price {current_price:.2f} > SMA {weekly_sma_current:.2f if weekly_sma_current else 'N/A'}), "
+                    f"🟢 BUY signal - Weekly uptrend (price {current_price:.2f} > SMA {weekly_sma_str}), "
                     f"Daily momentum positive (RSI {daily_rsi_current:.1f} > 50), "
                     f"Hourly breakout (price {current_price:.2f} > Entry_SMA {hourly_entry_sma_current:.2f})"
                 )
