@@ -180,21 +180,52 @@ class VolumeByTimeStrategy(Strategy):
 
                 # Profit target
                 if pnl_pct >= self.profit_target_pct:
+                    self.logger.info(
+                        f"🔴 SELL signal - Profit target reached ({pnl_pct:.2f}% >= {self.profit_target_pct:.2f}%)"
+                    )
+                    self.logger.info(
+                        f"💸 EXECUTING SELL at {current_close:.2f} "
+                        f"(Entry: {self.entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                    )
                     self.position.close()
                     return
 
                 # Stop loss
                 if pnl_pct <= -self.stop_loss_pct:
+                    self.logger.info(
+                        f"🔴 SELL signal - Stop loss triggered ({pnl_pct:.2f}% <= -{self.stop_loss_pct:.2f}%)"
+                    )
+                    self.logger.info(
+                        f"💸 EXECUTING SELL at {current_close:.2f} "
+                        f"(Entry: {self.entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                    )
                     self.position.close()
                     return
 
             # Time-based exit
             if self.entry_bar is not None and (current_bar - self.entry_bar) >= self.max_holding_bars:
+                bars_held = current_bar - self.entry_bar
+                pnl_pct = (current_close - self.entry_price) / self.entry_price * 100 if self.entry_price else 0
+                self.logger.info(
+                    f"🔴 SELL signal - Time-based exit ({bars_held} bars >= {self.max_holding_bars} bars)"
+                )
+                self.logger.info(
+                    f"💸 EXECUTING SELL at {current_close:.2f} "
+                    f"(Entry: {self.entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                )
                 self.position.close()
                 return
 
             # Volume-based exit (volume returns to normal)
             if volume_signal < self.volume_exit_threshold:
+                pnl_pct = (current_close - self.entry_price) / self.entry_price * 100 if self.entry_price else 0
+                self.logger.info(
+                    f"🔴 SELL signal - Volume returned to normal ({volume_signal:.2f}x < {self.volume_exit_threshold:.2f}x)"
+                )
+                self.logger.info(
+                    f"💸 EXECUTING SELL at {current_close:.2f} "
+                    f"(Entry: {self.entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                )
                 self.position.close()
                 return
 
@@ -210,6 +241,12 @@ class VolumeByTimeStrategy(Strategy):
 
             # Entry signal
             if volume_spike and bullish_condition and price_filter_ok:
+                self.logger.info(
+                    f"🟢 BUY signal - Volume spike detected ({volume_signal:.2f}x >= {self.volume_threshold_multiplier:.2f}x avg), "
+                    f"Bullish volume (Close {current_close:.2f} > Open {current_open:.2f}), "
+                    f"Price filter OK"
+                )
+                self.logger.info(f"💰 EXECUTING BUY at {current_close:.2f}")
                 self.buy(size=1)
                 self.entry_price = current_close
                 self.entry_bar = current_bar

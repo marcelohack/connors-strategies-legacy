@@ -86,6 +86,19 @@ class SimpleMarkovStrategy(Strategy):
         # Close any existing positions first
         # Important: This executes at NEXT bar's open, not current bar's close
         if self.position:
+            current_price = self.data.Close[-1]
+            entry_price = self.position.entry_price if hasattr(self.position, "entry_price") else None
+            if entry_price:
+                pnl_pct = ((current_price - entry_price) / entry_price * 100)
+                self.logger.info(
+                    f"🔴 SELL signal - One-bar holding period complete"
+                )
+                self.logger.info(
+                    f"💸 EXECUTING SELL at next bar open (Current: {current_price:.2f}, Entry: {entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                )
+            else:
+                self.logger.info(f"🔴 SELL signal - One-bar holding period complete")
+                self.logger.info(f"💸 EXECUTING SELL at next bar open (Current: {current_price:.2f})")
             self.position.close()
 
         # === Pattern Detection ===
@@ -95,6 +108,11 @@ class SimpleMarkovStrategy(Strategy):
         if consecutive_red_detected:
             # Enter long position expecting mean reversion
             # Order executes at current bar's open
+            current_price = self.data.Close[-1]
+            self.logger.info(
+                f"🟢 BUY signal - {self.consecutive_red_bars} consecutive red candles detected (mean reversion expected)"
+            )
+            self.logger.info(f"💰 EXECUTING BUY at next bar open (Current: {current_price:.2f})")
             self.buy(size=self.max_position_size)
 
     def _detect_consecutive_red_candles(self) -> bool:

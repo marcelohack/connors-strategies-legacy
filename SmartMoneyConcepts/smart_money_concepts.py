@@ -458,15 +458,57 @@ class SmartMoneyConceptsStrategy(Strategy):
         if self.position:
             # Time-based exit
             if self.entry_bar and (current_index - self.entry_bar) >= self.max_holding_bars:
+                bars_held = current_index - self.entry_bar
+                entry_price = self.position.entry_price if hasattr(self.position, "entry_price") else None
+                if entry_price:
+                    pnl_pct = ((current_price - entry_price) / entry_price * 100)
+                    self.logger.info(
+                        f"🔴 SELL signal - Time-based exit ({bars_held} bars >= {self.max_holding_bars} bars)"
+                    )
+                    self.logger.info(
+                        f"💸 EXECUTING SELL at {current_price:.2f} "
+                        f"(Entry: {entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                    )
+                else:
+                    self.logger.info(
+                        f"🔴 SELL signal - Time-based exit ({bars_held} bars >= {self.max_holding_bars} bars)"
+                    )
+                    self.logger.info(f"💸 EXECUTING SELL at {current_price:.2f}")
                 self.position.close()
                 return
 
             # Structure-based exit (opposite structure break)
             if structure_break:
                 if self.position.is_long and not structure_break.is_bullish:
+                    entry_price = self.position.entry_price if hasattr(self.position, "entry_price") else None
+                    if entry_price:
+                        pnl_pct = ((current_price - entry_price) / entry_price * 100)
+                        self.logger.info(
+                            f"🔴 SELL signal - Bearish structure break detected"
+                        )
+                        self.logger.info(
+                            f"💸 EXECUTING SELL at {current_price:.2f} "
+                            f"(Entry: {entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                        )
+                    else:
+                        self.logger.info(f"🔴 SELL signal - Bearish structure break detected")
+                        self.logger.info(f"💸 EXECUTING SELL at {current_price:.2f}")
                     self.position.close()
                     return
                 elif self.position.is_short and structure_break.is_bullish:
+                    entry_price = self.position.entry_price if hasattr(self.position, "entry_price") else None
+                    if entry_price:
+                        pnl_pct = ((entry_price - current_price) / entry_price * 100)
+                        self.logger.info(
+                            f"🔴 COVER signal - Bullish structure break detected"
+                        )
+                        self.logger.info(
+                            f"💸 EXECUTING COVER at {current_price:.2f} "
+                            f"(Entry: {entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                        )
+                    else:
+                        self.logger.info(f"🔴 COVER signal - Bullish structure break detected")
+                        self.logger.info(f"💸 EXECUTING COVER at {current_price:.2f}")
                     self.position.close()
                     return
 
@@ -518,6 +560,12 @@ class SmartMoneyConceptsStrategy(Strategy):
                     size = self._calculate_position_size(current_price, stop_loss)
 
                     if size > 0:
+                        self.logger.info(
+                            f"🟢 BUY signal - Bullish structure, retracement to order block/FVG in discount zone"
+                        )
+                        self.logger.info(
+                            f"💰 EXECUTING BUY at {current_price:.2f} (SL: {stop_loss:.2f}, TP: {take_profit:.2f}, R:R {self.reward_risk_ratio:.1f})"
+                        )
                         self.buy(size=size, sl=stop_loss, tp=take_profit)
                         self.entry_bar = current_index
                         self.last_trade_bar = current_index
@@ -563,6 +611,12 @@ class SmartMoneyConceptsStrategy(Strategy):
                     size = self._calculate_position_size(current_price, stop_loss)
 
                     if size > 0:
+                        self.logger.info(
+                            f"🔴 SHORT signal - Bearish structure, retracement to order block/FVG in premium zone"
+                        )
+                        self.logger.info(
+                            f"💰 EXECUTING SHORT at {current_price:.2f} (SL: {stop_loss:.2f}, TP: {take_profit:.2f}, R:R {self.reward_risk_ratio:.1f})"
+                        )
                         self.sell(size=size, sl=stop_loss, tp=take_profit)
                         self.entry_bar = current_index
                         self.last_trade_bar = current_index

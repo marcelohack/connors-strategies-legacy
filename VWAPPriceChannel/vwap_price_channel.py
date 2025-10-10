@@ -33,8 +33,28 @@ class VWAPPriceChannelStrategy(Strategy):
         if not self.position:
             # Buy when short MA crosses above long MA
             if self.sma_short[-1] > self.sma_long[-1] and self.sma_short[-2] <= self.sma_long[-2]:
+                current_price = self.data.Close[-1]
+                self.logger.info(
+                    f"🟢 BUY signal - Short MA ({self.sma_short[-1]:.2f}) crossed above Long MA ({self.sma_long[-1]:.2f})"
+                )
+                self.logger.info(f"💰 EXECUTING BUY at {current_price:.2f}")
                 self.buy()
         else:
             # Sell when short MA crosses below long MA
             if self.sma_short[-1] < self.sma_long[-1] and self.sma_short[-2] >= self.sma_long[-2]:
+                current_price = self.data.Close[-1]
+                entry_price = self.position.entry_price if hasattr(self.position, "entry_price") else None
+                if entry_price:
+                    pnl_pct = ((current_price - entry_price) / entry_price * 100)
+                    self.logger.info(
+                        f"🔴 SELL signal - Short MA ({self.sma_short[-1]:.2f}) crossed below Long MA ({self.sma_long[-1]:.2f})"
+                    )
+                    self.logger.info(
+                        f"💸 EXECUTING SELL at {current_price:.2f} (Entry: {entry_price:.2f}, P&L: {pnl_pct:.2f}%)"
+                    )
+                else:
+                    self.logger.info(
+                        f"🔴 SELL signal - Short MA ({self.sma_short[-1]:.2f}) crossed below Long MA ({self.sma_long[-1]:.2f})"
+                    )
+                    self.logger.info(f"💸 EXECUTING SELL at {current_price:.2f}")
                 self.position.close()
