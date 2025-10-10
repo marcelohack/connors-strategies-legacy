@@ -1,0 +1,82 @@
+{
+    "project_overview": {
+        "goals": "Collection of trading strategies converted from Pine Script to Python",
+        "framework": "Connors Trading framework with backtesting.py",
+        "technology_stack": [
+            "Python",
+            "pandas",
+            "numpy",
+            "talib",
+            "backtesting.py"
+        ],
+        "key_architectural_decisions": [
+            "Inherit from backtesting.Strategy",
+            "Use @registry.register_strategy decorator",
+            "Support CLI parameter overrides"
+        ]
+    },
+    "current_state": {
+        "recent_features": "Added colorful emoji-based logging to strategies",
+        "strategies_updated": [
+            "VolumeByTime",
+            "VWAPPriceChannel",
+            "SmartMoneyConcepts",
+            "SimpleMarkov"
+        ],
+        "known_issues": [],
+        "validation_approach": "Manual backtesting validation"
+    },
+    "design_decisions": {
+        "architectural_patterns": [
+            "Self-contained strategies in separate directories",
+            "Framework integration via registry system",
+            "External strategy loading support"
+        ],
+        "api_design": [
+            "Consistent init() and next() methods",
+            "Parameter class attributes with defaults",
+            "Standardized risk management parameters"
+        ]
+    },
+    "code_patterns": {
+        "conventions": [
+            "Snake_case parameters",
+            "Descriptive variable names",
+            "Comprehensive docstrings"
+        ],
+        "common_abstractions": [
+            "Strategy base class inheritance",
+            "I() wrapper for indicators",
+            "self.position management",
+            "Logger for trade signals"
+        ]
+    },
+    "logging_pattern": {
+        "signals": {
+            "🟢": "BUY signals with reasoning",
+            "🔴": "SELL/SHORT signals with reasoning",
+            "💰": "BUY execution",
+            "💸": "SELL execution"
+        },
+        "log_details": [
+            "Price levels",
+            "P&L percentages",
+            "Strategy-specific context"
+        ]
+    },
+    "repository_state": {
+        "branch": "main",
+        "last_commit": {
+            "hash": "b765656",
+            "message": "Add colorful logging to all non-multiTF strategies"
+        },
+        "status": "Clean working tree, 1 commit ahead of origin/main"
+    },
+    "future_roadmap": {
+        "potential_improvements": [
+            "More sophisticated logging patterns",
+            "Performance metrics logging"
+        ],
+        "technical_debt": []
+    }
+}
