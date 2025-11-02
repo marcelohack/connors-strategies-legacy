@@ -1,0 +1,19 @@
+{
+    "strategy_key": "previous_day_high_low_break_retest",
+    "strategy_name": "Previous Day High and Low Break and Retest",
+    "description": "A strategy that focuses on the high and low of the previous trading day's New York session, identified as key levels with significant resting volume. Trades are taken on the break and subsequent retest of these levels for either continuation or reversal.",
+    "market_regime": "Markets with sufficient volume, specifically during the New York session. Works best in trending or directional markets for continuation setups, and at potential exhaustion points for reversal setups.",
+    "timeframe": "1m, 5m, 15m, 30m, 1H, 4H, Daily",
+    "entry_rules": "Step 1 → Mark out the previous day's high and low from the New York session (9:30 AM - 4:00 PM EST). Step 2 → Wait for price to break above the previous day high or below the previous day low. Step 3 → After the break, wait for price to retest the broken level (the previous day high or low). Step 4 → Enter a long trade on a successful retest of the previous day high (for a continuation long) or a short trade on a successful retest of the previous day low (for a continuation short). For a reversal setup, enter when price rejects and moves away from the level.",
+    "exit_rules": {
+        "description": "Exit based on a fixed risk-to-reward target or price action showing momentum exhaustion.",
+        "stop_loss": "For a long continuation trade, place the stop loss just below the retest level (the previous day high). For a short continuation trade, place the stop loss just above the retest level (the previous day low).",
+        "take_profit": "Aim for a minimum 1:2 risk-to-reward ratio. Target previous significant swing points or use the structure of the move to determine profit targets."
+    },
+    "risk_management": {
+        "position_sizing": "Risk a fixed percentage of account capital per trade, typically 1-2%, with position size calculated based on the distance to the stop loss."
+    },
+    "indicators_tools": ["Price action", "Previous Day High/Low Levels", "Session Volume"],
+    "examples": ["Tesla breaking above its previous day high, retesting it along with an order block, and then exploding higher", "Hood breaking above its previous day high, retesting it, and having a solid push to the upside"],
+    "notes": "The previous day's high and low are significant because they contain the most volume from the main trading session. The continuation setup is the trader's personal favorite. The reversal setup is less frequent but still valid. Always consider the higher time frame context."
+}
