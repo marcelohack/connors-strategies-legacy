@@ -190,3 +190,6 @@ results/
 # Data cache
 data_cache/
 cache/
+
+# Claude Code
+.claude/agents
