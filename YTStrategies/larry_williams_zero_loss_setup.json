@@ -1,0 +1,29 @@
+[
+    {
+        "strategy_key": "larry_williams_zero_loss_setup",
+        "strategy_name": "Larry Williams 'Zero Loss' Setup",
+        "description": "A trend-following strategy using two three-period moving averages—one calculated on the high and one on the low—to enter trades on pullbacks and exit on opposing average touches. The strategy includes adaptive stop-loss management by trailing stops candle-by-candle based on new highs in uptrends and new lows in downtrends. A longer moving average (e.g., 55-period) may be added to assist with trend direction filtering.",
+        "market_regime": "Trending markets with clear directional bias",
+        "timeframe": "5m or 15m",
+        "entry_rules": "1. Identify the trend (price above longer moving average or higher highs and higher lows for uptrend; price below longer moving average or lower highs and lower lows for downtrend). 2. For a buy: wait for a candle to close below the moving average calculated on the low, then enter long at the close. 3. For a sell: wait for a candle to close above the moving average calculated on the high, then enter short at the close.",
+        "exit_rules": {
+            "description": "Exit when price closes beyond the opposite moving average, and manage the position by trailing the stop according to candle structure.",
+            "stop_loss": "Initial maximum stop loss recommended between 250–300 points. For longs, place stop below the low of the candle that triggers exit signal; for shorts, place stop above the high of the candle that triggers exit signal.",
+            "take_profit": "No fixed take profit is defined. Trailing stop moves to the low of each candle that makes a new high in an uptrend, and to the high of each candle that makes a new low in a downtrend, until hit."
+        },
+        "risk_management": {
+            "position_sizing": "Use a fixed maximum stop (e.g., 250–300 points) to size positions so that the loss does not exceed predetermined account risk per trade."
+        },
+        "indicators_tools": [
+            "3-period moving average (High)",
+            "3-period moving average (Low)",
+            "55-period moving average (optional trend filter)",
+            "Price action highs and lows"
+        ],
+        "examples": [
+            "Buy after a candle closes below the 3-period low average, then exit after a close above the 3-period high average with trailing stop yielding ~670 points.",
+            "Sell after a candle closes above the 3-period high average, trail stop on new lows until exit."
+        ],
+        "notes": "The setup is adaptive and allows modification of moving averages, stop size, and additional filters. Success depends on proper trend reading; results may be poor in choppy or sideways markets."
+    }
+]
