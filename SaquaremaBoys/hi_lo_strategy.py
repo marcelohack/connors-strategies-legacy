@@ -1,4 +1,4 @@
-from backtesting import Backtest, Strategy
+from backtesting import Strategy
 import numpy as np
 import pandas as pd
 import talib
@@ -85,12 +85,18 @@ class HiLo3DailyStrategy(Strategy):
     Setup Hi/Lo(3) diário – apenas compras
     - Entrada: fechamento > Hi(3) dos 3 candles anteriores (sem look-ahead).
     - Saída por inversão: fechamento < Lo(3) (mínima dos 3 anteriores).
-    - Stop inicial: 10% abaixo da entrada (simulado em self.last_stop).
-    - Proteção: após >=1 dia e lucro >1,5%, move stop para +0,5% acima da entrada.
+    - Stop inicial: configurável (padrão 10%) abaixo da entrada (simulado em self.last_stop).
+    - Proteção: após >=X dias e lucro >Y%, move stop para proteger Z% acima da entrada.
     - Stop móvel por volatilidade (ATR ou σ diário), sempre apertando (nunca alargando).
     """
 
-    # ---------- Parâmetros de trailing ----------
+    # ---------- Parâmetros de stop fixo ----------
+    initial_stop_pct = 0.10        # Stop inicial: 10% abaixo da entrada
+    min_bars_in_trade = 1          # Mínimo de dias em operação antes de ajustar stop
+    profit_threshold_pct = 0.015   # Gatilho: lucro > 1.5% para mover stop
+    profit_protection_pct = 0.005  # Protege 0.5% de ganho ao mover stop
+
+    # ---------- Parâmetros de trailing por volatilidade ----------
     method = 'ATR'        # 'ATR' ou 'STD' (σ diário)
     atr_period = 14
     atr_mult   = 2.0
@@ -122,7 +128,7 @@ class HiLo3DailyStrategy(Strategy):
         low   = self.data.Low
 
         # ATR: amplitude média verdadeira (inclui gaps)
-        self._atr = self.I(lambda h, l, c: talib.ATR(h, l, c, timeperiod=self.atr_period),
+        self._atr = self.I(lambda h, low_data, c: talib.ATR(h, low_data, c, timeperiod=self.atr_period),
                            high, low, close)
 
         # σ diário: desvio-padrão dos retornos log (não anualizado)
@@ -170,8 +176,8 @@ class HiLo3DailyStrategy(Strategy):
                 # registra parâmetros da operação
                 self.entry_price = float(close[-1])
                 self.entry_idx = cur_idx
-                # stop inicial: 10% abaixo da entrada (simulado)
-                self.last_stop = self.entry_price * (1 - 0.10)
+                # stop inicial: usa o parâmetro configurável (padrão 10%)
+                self.last_stop = self.entry_price * (1 - self.initial_stop_pct)
             return
 
         # Há posição aberta: sanidade
@@ -186,12 +192,12 @@ class HiLo3DailyStrategy(Strategy):
             self.last_stop = None
             return
 
-        # PROTEÇÃO (regra original): após >=1 dia e lucro >1,5%, garante +0,5% sobre a entrada
+        # PROTEÇÃO (regra original): após >=X dias e lucro >Y%, garante +Z% sobre a entrada
         bars_in_trade = cur_idx - self.entry_idx
         unrealized_gain = float(close[-1]) / self.entry_price - 1.0  # fração
 
-        if bars_in_trade >= 1 and unrealized_gain > 0.015:
-            protect_stop = self.entry_price * (1 + 0.005)
+        if bars_in_trade >= self.min_bars_in_trade and unrealized_gain > self.profit_threshold_pct:
+            protect_stop = self.entry_price * (1 + self.profit_protection_pct)
             if self.last_stop is None:
                 self.last_stop = protect_stop
             else:
@@ -231,51 +237,51 @@ class HiLo3DailyStrategy(Strategy):
 #     return stats
 
 
-def renomear_chaves_stats(stats):
-    """
-    Renomeia as principais chaves do dicionário stats para nomes mais amigáveis.
-    Adiciona a chave 'trades' como lista de dicionários.
-    Retorna um novo dicionário.
-    """
-    mapeamento = {
-        'Start': 'data_inicio',
-        'End': 'data_fim',
-        'Duration': 'duracao',
-        'Exposure Time [%]': 'tempo_operacao_pct',
-        'Equity Final [$]': 'equity_final',
-        'Equity Peak [$]': 'equity_maxima',
-        'Return [%]': 'retorno_total_pct',
-        'Buy & Hold Return [%]': 'retorno_buy_hold_pct',
-        'Return (Ann.) [%]': 'retorno_anual_pct',
-        'Volatility (Ann.) [%]': 'volatilidade_anual_pct',
-        'CAGR [%]': 'cagr_pct',
-        'Sharpe Ratio': 'sharpe',
-        'Sortino Ratio': 'sortino',
-        'Calmar Ratio': 'calmar',
-        'Alpha [%]': 'alpha_pct',
-        'Beta': 'beta',
-        'Max. Drawdown [%]': 'max_drawdown_pct',
-        'Avg. Drawdown [%]': 'avg_drawdown_pct',
-        'Max. Drawdown Duration': 'max_drawdown_duracao',
-        'Avg. Drawdown Duration': 'avg_drawdown_duracao',
-        '# Trades': 'num_trades',
-        'Win Rate [%]': 'taxa_acerto_pct',
-        'Best Trade [%]': 'melhor_trade_pct',
-        'Worst Trade [%]': 'pior_trade_pct',
-        'Avg. Trade [%]': 'media_trade_pct',
-        'Max. Trade Duration': 'max_trade_duracao',
-        'Avg. Trade Duration': 'avg_trade_duracao',
-        'Profit Factor': 'fator_lucro',
-        'Expectancy [%]': 'expectancy_pct',
-        'SQN': 'sqn',
-        'Kelly Criterion': 'kelly',
-    }
-    stats_new = {mapeamento.get(k, k): v for k, v in stats.items()}
+# def renomear_chaves_stats(stats):
+#     """
+#     Renomeia as principais chaves do dicionário stats para nomes mais amigáveis.
+#     Adiciona a chave 'trades' como lista de dicionários.
+#     Retorna um novo dicionário.
+#     """
+#     mapeamento = {
+#         'Start': 'data_inicio',
+#         'End': 'data_fim',
+#         'Duration': 'duracao',
+#         'Exposure Time [%]': 'tempo_operacao_pct',
+#         'Equity Final [$]': 'equity_final',
+#         'Equity Peak [$]': 'equity_maxima',
+#         'Return [%]': 'retorno_total_pct',
+#         'Buy & Hold Return [%]': 'retorno_buy_hold_pct',
+#         'Return (Ann.) [%]': 'retorno_anual_pct',
+#         'Volatility (Ann.) [%]': 'volatilidade_anual_pct',
+#         'CAGR [%]': 'cagr_pct',
+#         'Sharpe Ratio': 'sharpe',
+#         'Sortino Ratio': 'sortino',
+#         'Calmar Ratio': 'calmar',
+#         'Alpha [%]': 'alpha_pct',
+#         'Beta': 'beta',
+#         'Max. Drawdown [%]': 'max_drawdown_pct',
+#         'Avg. Drawdown [%]': 'avg_drawdown_pct',
+#         'Max. Drawdown Duration': 'max_drawdown_duracao',
+#         'Avg. Drawdown Duration': 'avg_drawdown_duracao',
+#         '# Trades': 'num_trades',
+#         'Win Rate [%]': 'taxa_acerto_pct',
+#         'Best Trade [%]': 'melhor_trade_pct',
+#         'Worst Trade [%]': 'pior_trade_pct',
+#         'Avg. Trade [%]': 'media_trade_pct',
+#         'Max. Trade Duration': 'max_trade_duracao',
+#         'Avg. Trade Duration': 'avg_trade_duracao',
+#         'Profit Factor': 'fator_lucro',
+#         'Expectancy [%]': 'expectancy_pct',
+#         'SQN': 'sqn',
+#         'Kelly Criterion': 'kelly',
+#     }
+#     stats_new = {mapeamento.get(k, k): v for k, v in stats.items()}
 
-    # Adiciona a lista de trades já pronta para o template
-    if '_trades' in stats and hasattr(stats['_trades'], 'to_dict'):
-        stats_new['trades'] = stats['_trades'].to_dict(orient='records')
-    else:
-        stats_new['trades'] = []
+#     Adiciona a lista de trades já pronta para o template
+#     if '_trades' in stats and hasattr(stats['_trades'], 'to_dict'):
+#         stats_new['trades'] = stats['_trades'].to_dict(orient='records')
+#     else:
+#         stats_new['trades'] = []
 
-    return stats_new
+#     return stats_new
