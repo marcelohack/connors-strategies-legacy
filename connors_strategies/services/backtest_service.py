@@ -53,7 +53,7 @@ from connors_core.core.strategy_parameter_override import (
 )
 from connors_datafetch.core.timespan import TimespanCalculator
 from connors_datafetch.core.registry import registry as datasource_registry
-from connors_strategies.services.base import BaseService
+from connors_core.services.base import BaseService
 from connors_core.utils.datetime_utils import add_utc_offset
 
 @dataclass
