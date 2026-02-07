@@ -8,6 +8,24 @@ A curated collection of trading strategies for use with [connors-backtest](https
 
 This is **not** a pip package — strategies are loaded at runtime via the `--external-strategy` CLI parameter or by adding this directory to `PYTHONPATH`.
 
+## Development Setup
+
+**Prerequisites**: Python 3.13, [pyenv](https://github.com/pyenv/pyenv) + [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv)
+
+```bash
+# 1. Create and activate a virtual environment
+pyenv virtualenv 3.13 connors-strategies
+pyenv activate connors-strategies
+
+# 2. Install connors packages from local checkouts (not on PyPI)
+pip install -e ../core -e ../datafetch
+
+# 3. Install backtest infrastructure (strategies depend on it)
+pip install -e "../backtest[dev]"
+```
+
+A `.python-version` file is included so pyenv auto-activates when you `cd` into this directory.
+
 ## Usage
 
 ### Via CLI (`--external-strategy`)
