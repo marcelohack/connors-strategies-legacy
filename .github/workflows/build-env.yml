@@ -153,6 +153,8 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
+        pip install git+https://github.com/marcelohack/connors-core.git
+        pip install git+https://github.com/marcelohack/connors-datafetch.git
         pip install -e ".[dev]"
 
     # === Environment Validation ===
