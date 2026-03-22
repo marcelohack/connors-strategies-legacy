@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "connors-strategies"
+version = "0.1.0"
+description = "Shared strategy logic for the Connors trading system"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.13"
+dependencies = [
+    "connors-core>=0.1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["connors_strategies*"]
+exclude = ["labs*", "tests*"]
