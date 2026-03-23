@@ -5,7 +5,7 @@ connors_core, making them environment-agnostic. TP/SL is NOT part of this
 layer — it's the caller's responsibility (RiskManager in bots, embedded
 in backtest strategy wrappers).
 
-Lab strategies (experimental, backtesting.py-specific) live in ../labs/.
+Lab strategies (experimental, backtesting.py-specific) live in the stratslab repo.
 """
 
 from connors_strategies.base_logic import BaseStrategyLogic

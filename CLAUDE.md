@@ -4,39 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a collection of external trading strategies for use with connors-backtest and the Connors Trading Playground. This is **not** a Python package — it is a plain directory of strategy files.
+Shared strategy logic package (`connors_strategies`) for the Connors trading system. Contains environment-agnostic strategy logic classes used by both backtesting and live trading bots.
 
-## Strategy Structure
+Experimental backtesting strategies have been moved to the `stratslab` repo (`../stratslab`).
 
-Each strategy lives in its own directory:
-- Main Python file implementing the strategy class
-- README.md with documentation
-- All strategies inherit from `backtesting.Strategy`
-- Strategies using the registry use `@registry.register_strategy("Name")` decorator
+## Package Structure
+
+- `connors_strategies/base_logic.py` — Abstract `BaseStrategyLogic` interface
+- `connors_strategies/lcrsi2_logic.py` — Larry Connors 2-Period RSI logic
+- `tests/` — Package tests
 
 ## Key Imports
 
 ```python
-# Registry (for framework integration)
-from connors_core.core.registry import registry
-
-# Multi-timeframe base class (from connors-backtest)
-from connors_backtest.strategies.multitimeframe.base import MultiTimeframeStrategy
+from connors_strategies import BaseStrategyLogic, LCRSI2Logic
+from connors_core.core.market_data import MarketSnapshot
 ```
 
-## Usage
+## Testing
 
-Strategies are loaded via the CLI `--external-strategy` parameter:
 ```bash
-python -m connors.cli.backtest \
-  --external-strategy /path/to/StrategyDir/strategy_file.py \
-  --strategy StrategyName \
-  --tickers AAPL --config america --datasource yfinance
+pip install -e ".[dev]"
+pytest tests/ -v
 ```
-
-## Conventions
-
-- Directory name matches strategy name (e.g., `VolumeByTime/volume_by_time.py`)
-- Strategy class registered with `@registry.register_strategy("DirectoryName")`
-- Parameters defined as class attributes with default values
-- Risk management (stop loss, position sizing) included in every strategy
