@@ -13,7 +13,23 @@ dependencies = [
     "connors-core>=0.1.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-mock>=3.14",
+    "black>=24.0",
+    "isort>=5.13",
+    "flake8>=7.0",
+    "mypy>=1.8",
+    "bandit>=1.7",
+]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["connors_strategies*"]
-exclude = ["labs*", "tests*"]
+exclude = ["tests*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"

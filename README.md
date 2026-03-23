@@ -4,9 +4,9 @@
 
 ## Overview
 
-A curated collection of trading strategies for use with [connors-backtest](https://github.com/marcelohack/connors-backtest). Each strategy is a standalone Python file that integrates with the Connors framework via the `@registry.register_strategy()` decorator.
+Shared strategy logic for the Connors trading system. Contains environment-agnostic strategy logic classes that can be used by both backtesting and live trading bots.
 
-This is **not** a pip package — strategies are loaded at runtime via the `--external-strategy` CLI parameter or by adding this directory to `PYTHONPATH`.
+For experimental backtesting strategies, see [stratslab](https://github.com/marcelohack/connors-stratslab).
 
 ## Development Setup
 
@@ -28,70 +28,20 @@ A `.python-version` file is included so pyenv auto-activates when you `cd` into 
 
 ## Usage
 
-### Via CLI (`--external-strategy`)
-
-```bash
-# Run a strategy from this collection
-python -m connors.cli.backtest \
-  --external-strategy /path/to/connors-strategies/VolumeByTime/volume_by_time.py \
-  --strategy VolumeByTime \
-  --tickers AAPL --config america --datasource yfinance --timespan 6M
-
-# Multi-timeframe strategy
-python -m connors.cli.backtest \
-  --external-strategy /path/to/connors-strategies/MultiTimeframeExample/multi_tf_momentum.py \
-  --strategy MultiTFMomentum \
-  --timeframes 1wk,1d --primary-timeframe 1d --tickers AAPL --timespan 1Y
-
-# Moon Dev crypto strategy
-python -m connors.cli.backtest \
-  --external-strategy /path/to/connors-strategies/moon-dev/rbi_v3-10_20_2025/DivergentReversion/divergent_reversion.py \
-  --strategy "rbi_v3-10_20_2025.DivergentReversion" \
-  --tickers BTC-USD --cash 100000
-```
-
-### Via `{appHome}/strategies/`
-
-Copy strategy directories into `~/.connors/strategies/` (or `$CONNORS_HOME/strategies/`) for automatic discovery by the Streamlit UI.
-
-## Strategy Catalog
-
-| Strategy | Directory | Description |
-|----------|-----------|-------------|
-| VolumeByTime | `VolumeByTime/` | Time-based volume anomaly detection |
-| VWAPPriceChannel | `VWAPPriceChannel/` | Dynamic VWAP-based price channel breakouts |
-| SmartMoneyConcepts | `SmartMoneyConcepts/` | Institutional trading methodology (order blocks, FVGs) |
-| SimpleMarkov | `SimpleMarkov/` | Markov chain-based regime trading |
-| MultiTFMomentum | `MultiTimeframeExample/` | Multi-timeframe momentum example |
-| SimpleTrendFollow | `MultiTimeframeExample/` | Multi-timeframe trend following example |
-| PartialElephantBars | `BR_AU_TradingBro/` | Elephant bar pattern detection |
-| SaquaremaBoys (11) | `SaquaremaBoys/` | Collection of Brazilian trading strategies |
-| YTStrategies (4) | `YTStrategies/` | YouTube-sourced strategy conversions |
-| Moon Dev RBI v3 (10) | `moon-dev/rbi_v3-10_20_2025/` | Advanced divergence/momentum crypto strategies |
-
-## Adding New Strategies
-
-1. Create a directory: `MyStrategy/`
-2. Create the strategy file: `my_strategy.py`
-3. Use the registry decorator:
-
 ```python
-from backtesting import Strategy
-from connors_core.core.registry import registry
+from connors_strategies import LCRSI2Logic
 
-@registry.register_strategy("MyStrategy")
-class MyStrategy(Strategy):
-    param1 = 10
-
-    def init(self):
-        pass
-
-    def next(self):
-        pass
+logic = LCRSI2Logic(rsi_length=2, rsi_level=5.0)
+signal = logic.generate_signal(snapshot, has_position=False)
+# Returns "BUY", "SELL", or "HOLD"
 ```
 
-4. Add a `README.md` with documentation
-5. Test via CLI: `python -m connors.cli.backtest --external-strategy MyStrategy/my_strategy.py --strategy MyStrategy ...`
+## Package Contents
+
+| Class | Description |
+|-------|-------------|
+| `BaseStrategyLogic` | Abstract base class for strategy signal generation |
+| `LCRSI2Logic` | Larry Connors 2-Period RSI entry/exit logic |
 
 ## Related Packages
 
