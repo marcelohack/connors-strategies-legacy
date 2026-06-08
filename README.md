@@ -10,21 +10,14 @@ For experimental backtesting strategies, see [stratslab](https://github.com/marc
 
 ## Development Setup
 
-**Prerequisites**: Python 3.13, [pyenv](https://github.com/pyenv/pyenv) + [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv)
+**Prerequisites**: [uv](https://github.com/astral-sh/uv) (will install Python 3.13 if needed).
+Sibling repo must be cloned alongside this one: `../core` (wired as an editable path source via `[tool.uv.sources]`).
 
 ```bash
-# 1. Create and activate a virtual environment
-pyenv virtualenv 3.13 connors-strategies
-pyenv activate connors-strategies
-
-# 2. Install connors packages from local checkouts (not on PyPI)
-pip install -e ../core -e ../datafetch
-
-# 3. Install backtest infrastructure (strategies depend on it)
-pip install -e "../backtest[dev]"
+uv sync --extra dev
 ```
 
-A `.python-version` file is included so pyenv auto-activates when you `cd` into this directory.
+uv reads `.python-version` to pick the interpreter and creates `.venv/` automatically. Run commands with `uv run <cmd>` (no activation needed), or `source .venv/bin/activate`.
 
 ## Usage
 

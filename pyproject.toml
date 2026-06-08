@@ -35,3 +35,6 @@ exclude = ["tests*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+
+[tool.uv.sources]
+connors-core = { path = "../core", editable = true }
