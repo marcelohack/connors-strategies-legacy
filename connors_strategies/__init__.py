@@ -9,11 +9,11 @@ Lab strategies (experimental, backtesting.py-specific) live in the stratslab rep
 """
 
 from connors_strategies.base_logic import BaseStrategyLogic
-from connors_strategies.lcrsi2_logic import LCRSI2Logic
+from connors_strategies.rsi2_logic import RSI2Logic
 from connors_strategies.multitimeframe_base import MultiTimeframeStrategy
 
 __all__ = [
     "BaseStrategyLogic",
-    "LCRSI2Logic",
+    "RSI2Logic",
     "MultiTimeframeStrategy",
 ]

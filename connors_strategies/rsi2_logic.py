@@ -11,8 +11,8 @@ from connors_core.core.market_data import MarketSnapshot
 from connors_strategies.base_logic import BaseStrategyLogic
 
 
-class LCRSI2Logic(BaseStrategyLogic):
-    """Pure LCRSI2 entry/exit signal logic.
+class RSI2Logic(BaseStrategyLogic):
+    """Pure RSI-2 entry/exit signal logic.
 
     This class is environment-agnostic — it works with any MarketSnapshot
     implementation (DataFrameMarketSnapshot for backtesting,

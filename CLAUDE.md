@@ -11,13 +11,13 @@ Experimental backtesting strategies have been moved to the `stratslab` repo (`..
 ## Package Structure
 
 - `connors_strategies/base_logic.py` — Abstract `BaseStrategyLogic` interface
-- `connors_strategies/lcrsi2_logic.py` — Larry Connors 2-Period RSI logic
+- `connors_strategies/rsi2_logic.py` — Larry Connors 2-Period RSI logic
 - `tests/` — Package tests
 
 ## Key Imports
 
 ```python
-from connors_strategies import BaseStrategyLogic, LCRSI2Logic
+from connors_strategies import BaseStrategyLogic, RSI2Logic
 from connors_core.core.market_data import MarketSnapshot
 ```
 
