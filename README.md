@@ -22,9 +22,9 @@ uv reads `.python-version` to pick the interpreter and creates `.venv/` automati
 ## Usage
 
 ```python
-from connors_strategies import LCRSI2Logic
+from connors_strategies import RSI2Logic
 
-logic = LCRSI2Logic(rsi_length=2, rsi_level=5.0)
+logic = RSI2Logic(rsi_length=2, rsi_level=5.0)
 signal = logic.generate_signal(snapshot, has_position=False)
 # Returns "BUY", "SELL", or "HOLD"
 ```
@@ -34,7 +34,7 @@ signal = logic.generate_signal(snapshot, has_position=False)
 | Class | Description |
 |-------|-------------|
 | `BaseStrategyLogic` | Abstract base class for strategy signal generation |
-| `LCRSI2Logic` | Larry Connors 2-Period RSI entry/exit logic |
+| `RSI2Logic` | Larry Connors 2-Period RSI entry/exit logic |
 
 ## Related Packages
 

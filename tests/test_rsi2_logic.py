@@ -1,30 +1,30 @@
-"""Tests for LCRSI2Logic strategy logic."""
+"""Tests for RSI2Logic strategy logic."""
 
 import pytest
 
-from connors_strategies.lcrsi2_logic import LCRSI2Logic
+from connors_strategies.rsi2_logic import RSI2Logic
 from tests.conftest import make_snapshot
 
 
-class TestLCRSI2LogicInit:
+class TestRSI2LogicInit:
     def test_default_parameters(self):
-        logic = LCRSI2Logic()
+        logic = RSI2Logic()
         assert logic.rsi_length == 2
         assert logic.rsi_level == 5.0
         assert logic.short_sma_length == 5
         assert logic.long_sma_length == 200
 
     def test_custom_parameters(self):
-        logic = LCRSI2Logic(rsi_length=3, rsi_level=10.0, short_sma_length=10, long_sma_length=50)
+        logic = RSI2Logic(rsi_length=3, rsi_level=10.0, short_sma_length=10, long_sma_length=50)
         assert logic.rsi_length == 3
         assert logic.rsi_level == 10.0
         assert logic.short_sma_length == 10
         assert logic.long_sma_length == 50
 
 
-class TestLCRSI2LogicSignals:
+class TestRSI2LogicSignals:
     def setup_method(self):
-        self.logic = LCRSI2Logic()
+        self.logic = RSI2Logic()
 
     def test_hold_when_no_indicators(self):
         """Returns HOLD when indicators are missing (not enough data)."""
@@ -77,15 +77,15 @@ class TestLCRSI2LogicSignals:
         assert self.logic.generate_signal(snapshot, has_position=False) == "HOLD"
 
 
-class TestLCRSI2LogicCustomParams:
+class TestRSI2LogicCustomParams:
     def test_custom_rsi_level(self):
         """BUY with custom RSI level threshold."""
-        logic = LCRSI2Logic(rsi_level=10.0)
+        logic = RSI2Logic(rsi_level=10.0)
         snapshot = make_snapshot(close=210.0, rsi_2=8.0, sma_5=205.0, sma_200=200.0)
         assert logic.generate_signal(snapshot, has_position=False) == "BUY"
 
     def test_custom_rsi_level_too_high(self):
         """No BUY when RSI is above custom level."""
-        logic = LCRSI2Logic(rsi_level=10.0)
+        logic = RSI2Logic(rsi_level=10.0)
         snapshot = make_snapshot(close=210.0, rsi_2=12.0, sma_5=205.0, sma_200=200.0)
         assert logic.generate_signal(snapshot, has_position=False) == "HOLD"
